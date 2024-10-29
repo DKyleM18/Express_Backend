@@ -5,13 +5,16 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "author": "Daniel Kyle Messersmith",
   "license": "ISC",
   "dependencies": {
     "express": "^4.21.1",
-    "mongoose": "^6.6.1"
+    "mongoose": "^6.6.1",
+    "validator": "^13.12.0"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
