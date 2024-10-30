@@ -1,5 +1,5 @@
 const User = require("../models/user");
-const { castError, notFoundError, serverError } = require("../utils");
+const { castError, notFoundError, serverError } = require("../utils/errors");
 
 const createUser = (req, res) => {
   console.log("POST user in controller");
@@ -36,7 +36,8 @@ const getUser = (req, res) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(notFoundError).send({ message: err.message });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(castError).send({ message: err.message });
       }
       return res.status(serverError).send({ message: err.message });

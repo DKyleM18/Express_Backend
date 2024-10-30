@@ -1,6 +1,5 @@
 const mpongoose = require("mongoose");
 const validator = require("validator");
-const { create } = require("./user");
 
 const clothingItemSchema = new mpongoose.Schema({
   name: {
