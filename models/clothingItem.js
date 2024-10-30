@@ -36,4 +36,4 @@ const clothingItemSchema = new mpongoose.Schema({
   },
 });
 
-module.exports = mpongoose.model("clothingItem", clothingItemSchema);
+module.exports = mpongoose.model("item", clothingItemSchema);

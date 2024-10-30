@@ -1,9 +1,25 @@
 const router = require("express").Router();
 
-router.get("/", () => console.log("GET clothingItems"));
+const { get } = require("mongoose");
+const {
+  getItems,
+  getItem,
+  createItem,
+  deleteItem,
+  likeItem,
+  dislikeItem,
+} = require("../controllers/clothingItems");
 
-router.get("/:id", () => console.log("GET clothingItems by ID"));
+router.get("/", getItems);
 
-router.post("/", () => console.log("POST clothingItems"));
+router.get("/:itemId", getItem);
+
+router.post("/", createItem);
+
+router.put("/:itemId/likes", likeItem);
+
+router.delete("/:itemId/likes", dislikeItem);
+
+router.delete("/:itemId", deleteItem);
 
 module.exports = router;
