@@ -8,8 +8,8 @@ router.use("/items", clothingItemRouter);
 
 router.use("/users", userRouter);
 
-router.use("*", (req, res) => {
-  return res.status(notFoundError).send({ message: "Not found" });
-});
+router.use("*", (req, res) =>
+  res.status(notFoundError).send({ message: "Not found" })
+);
 
 module.exports = router;
