@@ -11,7 +11,7 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(castError).send({ message: err.message });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -22,7 +22,7 @@ const getUsers = (req, res) => {
     .then((users) => res.status(200).send(users))
     .catch((err) => {
       console.error(err);
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -40,7 +40,7 @@ const getUser = (req, res) => {
       if (err.name === "CastError") {
         return res.status(castError).send({ message: err.message });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 

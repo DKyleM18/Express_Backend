@@ -13,7 +13,7 @@ const createItem = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(castError).send({ message: err.message });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -24,7 +24,7 @@ const getItems = (req, res) => {
     .then((clothingItems) => res.status(200).send(clothingItems))
     .catch((err) => {
       console.error(err);
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -43,7 +43,7 @@ const getItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(castError).send({ message: err.message });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -65,7 +65,7 @@ const likeItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(castError).send({ message: err.message });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -87,7 +87,7 @@ const dislikeItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(castError).send({ message: err.message });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -106,7 +106,7 @@ const deleteItem = (req, res) => {
       if (err.name === "CastError") {
         return res.status(castError).send({ message: err.message });
       }
-      return res.status(serverError).send({ message: err.message });
+      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 

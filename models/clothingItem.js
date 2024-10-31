@@ -22,16 +22,16 @@ const clothingItemSchema = new mpongoose.Schema({
       },
       message: "You must enter a valid URL",
     },
-    owner: {
-      type: mpongoose.Schema.Types.ObjectId,
-      ref: "user",
-      required: true,
-    },
-    likes: [{ type: mpongoose.Schema.Types.ObjectId, ref: "user" }],
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+  },
+  likes: [{ type: mpongoose.Schema.Types.ObjectId, ref: "user" }],
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  owner: {
+    type: mpongoose.Schema.Types.ObjectId,
+    ref: "user",
+    required: true,
   },
 });
 
