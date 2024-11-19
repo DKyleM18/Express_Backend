@@ -1,15 +1,23 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { castError, notFoundError, serverError } = require("../utils/errors");
+const { JWT_SECRET } = require("../utils/config");
+const {
+  badRequestError,
+  unauthorizedError,
+  forbiddenError,
+  notFoundError,
+  conflictError,
+  serverError,
+} = require("../utils/errors");
 
 const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
-
   User.findOne({ email })
+    .select("+password")
     .then((existingUser) => {
       if (existingUser) {
-        return res.status(400).send({ message: "Email in use" });
+        return Promise.reject(new Error("Email in use"));
       }
       return bcrypt
         .hash(password, 10)
@@ -22,25 +30,51 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       console.error(err);
-      if (err.name === "ValidationError") {
-        return res.status(castError).send({ message: err.message });
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        next(new badRequestError("Invalid data"));
+      } else if (err.name === "MongoError" && err.code === 11000) {
+        next(new conflictError("Email in use"));
+      } else {
+        next(err);
       }
-      return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
 const login = (req, res) => {
   const { email, password } = req.body;
-  User.findUserByCredentials(email, password)
+  if (!email || !password) {
+    next(new badRequestError("Invalid data"));
+  }
+  return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign({ _id: user._id }, "some-secret-key", {
-        expiresIn: "7h",
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
       });
       res.send({ token });
     })
     .catch((err) => {
       console.error(err);
-      return res.status(serverError).send({ message: "Invalid data" });
+      if (err.name === "UnauthorizedError") {
+        next(new unauthorizedError("Incorrect email or password"));
+      } else {
+        next(err);
+      }
+    });
+};
+
+const getCurrentUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail()
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "DocumentNotFoundError") {
+        next(new notFoundError("User not found"));
+      } else if (err.name === "CastError") {
+        next(new badRequestError("Invalid data"));
+      } else {
+        next(err);
+      }
     });
 };
 
@@ -73,4 +107,32 @@ const getUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getUser, login };
+const updateUser = (req, res, next) => {
+  const { name, avatar } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, avatar },
+    { new: true, runValidators: true }
+  )
+    .orFail()
+    .then((user) => res.status(200).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        next(new badRequestError("Invalid data"));
+      } else if (err.name === "DocumentNotFoundError") {
+        next(new notFoundError("User not found"));
+      } else {
+        next(err);
+      }
+    });
+};
+
+module.exports = {
+  getUsers,
+  createUser,
+  getUser,
+  login,
+  getCurrentUser,
+  updateUser,
+};
