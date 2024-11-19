@@ -108,23 +108,20 @@ const deleteItem = (req, res) => {
     .then((item) => {
       if (item.owner.toString() !== req.user._id) {
         next(new forbiddenError("You can delete only your items"));
-      } else {
-        clothingItem
-          .findByIdAndRemove(req.params.itemId)
-          .then(() =>
-            res.status(200).send({ message: "Clothing item deleted" })
-          )
-          .catch((err) => {
-            console.error(err);
-            if (err.name === "DocumentNotFoundError") {
-              next(new notFoundError("Clothing item not found"));
-            } else if (err.name === "CastError") {
-              next(new badRequestError("Invalid data"));
-            } else {
-              next(err);
-            }
-          });
       }
+      return clothingItem
+        .findByIdAndRemove(req.params.itemId)
+        .then(() => res.status(200).send({ message: "Clothing item deleted" }))
+        .catch((err) => {
+          console.error(err);
+          if (err.name === "DocumentNotFoundError") {
+            next(new notFoundError("Clothing item not found"));
+          } else if (err.name === "CastError") {
+            next(new badRequestError("Invalid data"));
+          } else {
+            next(err);
+          }
+        });
     });
 };
 

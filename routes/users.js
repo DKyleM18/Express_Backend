@@ -10,9 +10,9 @@ const {
 router.post("/signin", login);
 router.post("/signup", createUser);
 
-router.use(auth);
+// router.use(auth);
 
-router.get("/me", getCurrentUser);
-router.patch("/me", updateUser);
+router.get("/users/me", getCurrentUser);
+router.patch("/users/me", updateUser);
 
 module.exports = router;
