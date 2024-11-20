@@ -10,7 +10,7 @@ const {
 router.post("/signin", login);
 router.post("/signup", createUser);
 
-// router.use(auth);
+router.use(auth);
 
 router.get("/users/me", getCurrentUser);
 router.patch("/users/me", updateUser);

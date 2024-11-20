@@ -12,7 +12,7 @@ const {
 
 router.get("/items", getItems);
 
-// router.use(auth);
+router.use(auth);
 
 router.get("/items/:itemId", getItem);
 
