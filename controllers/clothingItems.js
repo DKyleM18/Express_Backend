@@ -26,7 +26,7 @@ const getItems = (req, res) => {
   console.log("GET clothingItems in controller");
   clothingItem
     .find({})
-    .then((clothingItems) => res.status(200).send(clothingItems))
+    .then((clothingItems) => res.send(clothingItems))
     .catch((err) => {
       console.error(err);
       return res.status(serverError).send({ message: "Invalid data" });
@@ -39,7 +39,7 @@ const getItem = (req, res) => {
   clothingItem
     .findById(itemId)
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
@@ -61,7 +61,7 @@ const likeItem = (req, res) => {
       { new: true }
     )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
@@ -83,7 +83,7 @@ const dislikeItem = (req, res) => {
       { new: true }
     )
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => res.send(item))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
@@ -108,7 +108,7 @@ const deleteItem = (req, res) => {
       }
       return clothingItem
         .findByIdAndRemove(itemId)
-        .then(() => res.status(200).send({ message: "Item deleted" }));
+        .then(() => res.send({ message: "Item deleted" }));
     })
     .catch((err) => {
       console.error(err);
