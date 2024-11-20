@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const auth = require("../middlewares/auth");
 
 const {
   getItems,
@@ -10,6 +11,8 @@ const {
 } = require("../controllers/clothingItems");
 
 router.get("/", getItems);
+
+router.use(auth);
 
 router.get("/:itemId", getItem);
 

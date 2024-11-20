@@ -1,5 +1,11 @@
 const clothingItem = require("../models/clothingItem");
-const { castError, notFoundError, serverError } = require("../utils/errors");
+const {
+  castError,
+  notFoundError,
+  serverError,
+  unauthorizedError,
+  forbiddenError,
+} = require("../utils/errors");
 
 const createItem = (req, res) => {
   console.log("POST clothingItem in controller");
@@ -95,9 +101,16 @@ const deleteItem = (req, res) => {
   console.log("DELETE clothingItems by ID in controller");
   const { itemId } = req.params;
   clothingItem
-    .findByIdAndRemove(itemId)
+    .findById(itemId)
     .orFail()
-    .then((item) => res.status(200).send(item))
+    .then((item) => {
+      if (!item.owner.equals(req.user._id)) {
+        return res.status(forbiddenError).send({ message: "Forbidden" });
+      }
+      return clothingItem
+        .findByIdAndRemove(itemId)
+        .then(() => res.status(200).send({ message: "Item deleted" }));
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
