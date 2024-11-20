@@ -6,7 +6,6 @@ const {
   notFoundError,
   serverError,
   unauthorizedError,
-  forbiddenError,
   conflictError,
 } = require("../utils/errors");
 

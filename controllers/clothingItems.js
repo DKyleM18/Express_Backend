@@ -3,7 +3,6 @@ const {
   castError,
   notFoundError,
   serverError,
-  unauthorizedError,
   forbiddenError,
 } = require("../utils/errors");
 
