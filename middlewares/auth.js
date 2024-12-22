@@ -6,7 +6,7 @@ const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith("Bearer ")) {
-    next(new UnauthorizedError("Unauthorized"));
+    return next(new UnauthorizedError("Unauthorized"));
   }
 
   const token = authorization.replace("Bearer ", "");
@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    next(new UnauthorizedError("Unauthorized"));
+    return next(new UnauthorizedError("Unauthorized"));
   }
 
   req.user = payload;
