@@ -1,15 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const {
-  castError,
-  notFoundError,
-  serverError,
-  unauthorizedError,
-  conflictError,
-} = require("../utils/errors");
+const BadRequestError = require("../errors/bad-request-error");
+const UnauthorizedError = require("../errors/unauthorized-error");
+const NotFoundError = require("../errors/not-found-error");
+const ConflictError = require("../errors/conflict-error");
 
-const createUser = (req, res) => {
+const createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
 
   return bcrypt
@@ -21,14 +18,21 @@ const createUser = (req, res) => {
       res.status(201).send(userWithoutPassword);
     })
     .catch((err) => {
-      console.error(err);
       if (err.message === "Email in use" || err.code === 11000) {
-        return res.status(conflictError).send({ message: err.message });
+        next(new ConflictError(err.message));
+      } else if (err.name === "ValidationError" || err.name === "CastError") {
+        next(new BadRequestError(err.message));
+      } else {
+        next(err);
       }
-      if (err.name === "ValidationError") {
-        return res.status(castError).send({ message: err.message });
-      }
-      return res.status(serverError).send({ message: "Invalid data" });
+      // console.error(err);
+      // if (err.message === "Email in use" || err.code === 11000) {
+      //   return res.status(conflictError).send({ message: err.message });
+      // }
+      // if (err.name === "ValidationError") {
+      //   return res.status(castError).send({ message: err.message });
+      // }
+      // return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -36,7 +40,8 @@ const login = (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(castError).send({ message: "Invalid data" });
+    throw new BadRequestError("Invalid data");
+    // return res.status(castError).send({ message: "Invalid data" });
   }
 
   return User.findUserByCredentials(email, password)
@@ -47,11 +52,16 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      console.error(err);
+      // console.error(err);
       if (err.message === "Incorrect email or password") {
-        return res.status(unauthorizedError).send({ message: err.message });
+        next(new UnauthorizedError(err.message));
+      } else {
+        next(err);
       }
-      return res.status(serverError).send({ message: "Invalid data" });
+      // if (err.message === "Incorrect email or password") {
+      //   return res.status(unauthorizedError).send({ message: err.message });
+      // }
+      // return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -61,14 +71,17 @@ const getCurrentUser = (req, res) => {
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
-      console.error(err);
+      // console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFoundError).send({ message: err.message });
+        next(new NotFoundError(err.message));
+        // return res.status(notFoundError).send({ message: err.message });
       }
       if (err.name === "CastError") {
-        return res.status(castError).send({ message: err.message });
+        // return res.status(castError).send({ message: err.message });
+        next(new BadRequestError(err.message));
       }
-      return res.status(serverError).send({ message: "Invalid data" });
+      next(err);
+      // return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
@@ -85,15 +98,19 @@ const patchCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(castError).send({ message: err.message });
+        // return res.status(castError).send({ message: err.message });
+        next(new BadRequestError(err.message));
       }
       if (err.name === "DocumentNotFoundError") {
-        return res.status(notFoundError).send({ message: err.message });
+        // return res.status(notFoundError).send({ message: err.message });
+        next(new NotFoundError(err.message));
       }
       if (err.name === "CastError") {
-        return res.status(castError).send({ message: err.message });
+        // return res.status(castError).send({ message: err.message });
+        next(new BadRequestError(err.message));
       }
-      return res.status(serverError).send({ message: "Invalid data" });
+      // return res.status(serverError).send({ message: "Invalid data" });
+      next(err);
     });
 };
 
