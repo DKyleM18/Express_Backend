@@ -25,23 +25,14 @@ const createUser = (req, res, next) => {
       } else {
         next(err);
       }
-      // console.error(err);
-      // if (err.message === "Email in use" || err.code === 11000) {
-      //   return res.status(conflictError).send({ message: err.message });
-      // }
-      // if (err.name === "ValidationError") {
-      //   return res.status(castError).send({ message: err.message });
-      // }
-      // return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
-const login = (req, res) => {
+const login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     throw new BadRequestError("Invalid data");
-    // return res.status(castError).send({ message: "Invalid data" });
   }
 
   return User.findUserByCredentials(email, password)
@@ -52,40 +43,31 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      // console.error(err);
       if (err.message === "Incorrect email or password") {
         next(new UnauthorizedError(err.message));
       } else {
         next(err);
       }
-      // if (err.message === "Incorrect email or password") {
-      //   return res.status(unauthorizedError).send({ message: err.message });
-      // }
-      // return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
-const getCurrentUser = (req, res) => {
+const getCurrentUser = (req, res, next) => {
   const { _id } = req.user;
   User.findById(_id)
     .orFail()
     .then((user) => res.send(user))
     .catch((err) => {
-      // console.error(err);
       if (err.name === "DocumentNotFoundError") {
         next(new NotFoundError(err.message));
-        // return res.status(notFoundError).send({ message: err.message });
       }
       if (err.name === "CastError") {
-        // return res.status(castError).send({ message: err.message });
         next(new BadRequestError(err.message));
       }
       next(err);
-      // return res.status(serverError).send({ message: "Invalid data" });
     });
 };
 
-const patchCurrentUser = (req, res) => {
+const patchCurrentUser = (req, res, next) => {
   const { _id } = req.user;
   const { name, avatar } = req.body;
   return User.findByIdAndUpdate(
@@ -98,18 +80,14 @@ const patchCurrentUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        // return res.status(castError).send({ message: err.message });
         next(new BadRequestError(err.message));
       }
       if (err.name === "DocumentNotFoundError") {
-        // return res.status(notFoundError).send({ message: err.message });
         next(new NotFoundError(err.message));
       }
       if (err.name === "CastError") {
-        // return res.status(castError).send({ message: err.message });
         next(new BadRequestError(err.message));
       }
-      // return res.status(serverError).send({ message: "Invalid data" });
       next(err);
     });
 };
