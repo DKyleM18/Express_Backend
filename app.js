@@ -26,6 +26,7 @@ app.get("/crash-test", () => {
   }, 0);
 });
 app.use("/", indexRouter);
+// app.use("/wtwr")
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
