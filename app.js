@@ -3,7 +3,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { errors } = require("celebrate");
-const indexRouter = require("./routes/index");
+const wtwrRouter = require("./routes/wtwr");
+const newsRouter = require("./routes/news");
 const errorHandler = require("./middlewares/error-handler");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 
@@ -25,7 +26,8 @@ app.get("/crash-test", () => {
     throw new Error("Server will crash now");
   }, 0);
 });
-app.use("/", indexRouter);
+app.use("/wtwr", wtwrRouter);
+app.use("/news", newsRouter);
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
