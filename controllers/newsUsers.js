@@ -8,11 +8,11 @@ const ConflictError = require("../errors/conflict-error");
 const { JWT_SECRET } = require("../utils/config");
 
 const createNewsUser = (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   return bcrypt
     .hash(password, 10)
-    .then((hash) => newsUser.create({ name, email, password: hash }))
+    .then((hash) => newsUser.create({ username, email, password: hash }))
     .then((user) => {
       const userWithoutPassword = user.toObject();
       delete userWithoutPassword.password;

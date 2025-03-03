@@ -3,7 +3,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 const newsUserSchema = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true,
     minlength: 2,

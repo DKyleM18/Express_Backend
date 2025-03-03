@@ -29,28 +29,6 @@ const createUser = (req, res, next) => {
     });
 };
 
-const createNewsUser = (req, res, next) => {
-  const { name, email, password } = req.body;
-
-  return bcrypt
-    .hash(password, 10)
-    .then((hash) => User.create({ name, email, password: hash }))
-    .then((user) => {
-      const userWithoutPassword = user.toObject();
-      delete userWithoutPassword.password;
-      res.status(201).send(userWithoutPassword);
-    })
-    .catch((err) => {
-      if (err.message === "Email in use" || err.code === 11000) {
-        next(new ConflictError(err.message));
-      } else if (err.name === "ValidationError" || err.name === "CastError") {
-        next(new BadRequestError(err.message));
-      } else {
-        next(err);
-      }
-    });
-};
-
 const login = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -123,5 +101,4 @@ module.exports = {
   getCurrentUser,
   login,
   patchCurrentUser,
-  createNewsUser,
 };
