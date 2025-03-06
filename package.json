@@ -1,5 +1,5 @@
 {
-  "name": "se_project_express",
+  "name": "express_backend",
   "version": "1.0.0",
   "description": "The back-end for Daniel Kyle Messersmith's Portfolio projects",
   "main": "app.js",
