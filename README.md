@@ -4,7 +4,7 @@ This repository contains the back-end code for the "What to Wear" application. T
 
 ## Link to Deployed Site
 
-[https://d.kyle.blinklab.com/](https://d.kyle.blinklab.com/)
+[https://dkylem.com/](https://dkylem.com/)
 
 ## Technology and Techniques Used
 
