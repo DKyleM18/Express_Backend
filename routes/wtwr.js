@@ -12,7 +12,7 @@ router.post("/signin", validateLogin, login);
 router.post("/signup", validateWearUserBody, createUser);
 
 router.use("/items", clothingItemRouter);
-router.use("/wearUsers", wearUserRouter);
+router.use("/users", wearUserRouter);
 
 router.use((req, res, next) => {
   next(new NotFoundError("Route not found"));
