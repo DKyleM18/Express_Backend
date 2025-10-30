@@ -19,7 +19,13 @@ mongoose
   .catch(console.error);
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://dkylem.com, https://www.dkylem.com",
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(requestLogger);
 app.get("/crash-test", () => {
   setTimeout(() => {
