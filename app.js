@@ -10,6 +10,7 @@ const { requestLogger, errorLogger } = require("./middlewares/logger");
 
 const app = express();
 const { PORT = 3001 } = process.env;
+const allowedOrigins = ["https://dkylem.com", "https://www.dkylem.com"];
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/wtwr_db")
@@ -19,13 +20,22 @@ mongoose
   .catch(console.error);
 
 app.use(express.json());
+
 app.use(
   cors({
-    origin: "https://dkylem.com, https://www.dkylem.com",
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 app.use(requestLogger);
 app.get("/crash-test", () => {
   setTimeout(() => {
